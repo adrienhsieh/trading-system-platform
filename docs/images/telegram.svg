@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 480" font-family="'Segoe UI','Noto Sans TC',system-ui,sans-serif">
+  <defs><filter id="s"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity=".06"/></filter></defs>
+  <rect width="400" height="480" rx="12" fill="#f0f2f5"/>
+  <!-- Telegram header -->
+  <rect width="400" height="50" rx="12" fill="#2AABEE"/>
+  <rect y="38" width="400" height="12" fill="#2AABEE"/>
+  <text x="20" y="32" font-size="16" font-weight="600" fill="#fff">Trading System Bot</text>
+  <text x="340" y="32" font-size="11" fill="rgba(255,255,255,.7)">online</text>
+  <!-- Chat bubbles -->
+  <!-- User message -->
+  <g transform="translate(120,68)">
+    <rect width="260" height="30" rx="12" fill="#DCF8C6"/>
+    <text x="14" y="20" font-size="12" fill="#111">/分析 2330</text>
+  </g>
+  <!-- Bot response -->
+  <g transform="translate(20,110)">
+    <rect width="340" height="345" rx="12" fill="#fff" filter="url(#s)"/>
+    <text x="14" y="24" font-size="13" font-weight="700" fill="#111">🔍 個股分析：2330 台積電</text>
+    <line x1="14" y1="34" x2="326" y2="34" stroke="#e5e7eb"/>
+    <text x="14" y="52" font-size="11" fill="#6b7280">📊 技術指標</text>
+    <text x="14" y="70" font-size="11" fill="#374151" font-family="monospace">  收盤價  1,898.13</text>
+    <text x="14" y="86" font-size="11" fill="#374151" font-family="monospace">  20EMA   1,917.24</text>
+    <text x="14" y="102" font-size="11" fill="#374151" font-family="monospace">  ADX     28.5    ATR 42.3</text>
+    <line x1="14" y1="112" x2="326" y2="112" stroke="#f3f4f6"/>
+    <text x="14" y="130" font-size="11" fill="#10b981" font-weight="600">✅ 通過信號（5/6）</text>
+    <text x="14" y="148" font-size="11" fill="#10b981">  ✓ 均線排列</text>
+    <text x="14" y="164" font-size="11" fill="#10b981">  ✓ 三線齊揚</text>
+    <text x="14" y="180" font-size="11" fill="#10b981">  ✓ ADX>25</text>
+    <text x="14" y="196" font-size="11" fill="#10b981">  ✓ MACD紅柱</text>
+    <text x="14" y="212" font-size="11" fill="#10b981">  ✓ 爆量</text>
+    <text x="14" y="232" font-size="11" fill="#ef4444">❌ 未通過</text>
+    <text x="14" y="248" font-size="11" fill="#ef4444">  ✗ 5穿20</text>
+    <line x1="14" y1="258" x2="326" y2="258" stroke="#f3f4f6"/>
+    <text x="14" y="276" font-size="11" fill="#6b7280">📋 進場參數</text>
+    <text x="14" y="294" font-size="11" fill="#374151" font-family="monospace">  進場價  1,898.13</text>
+    <text x="14" y="310" font-size="11" fill="#ef4444" font-family="monospace">  停損價  1,650.00</text>
+    <text x="14" y="326" font-size="11" fill="#10b981" font-family="monospace">  目標價  2,394.26</text>
+    <text x="14" y="342" font-size="10" fill="#9ca3af">⚠ 技術指標僅供參考，非投資建議</text>
+  </g>
+</svg>

@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" font-family="'Segoe UI','Noto Sans TC',system-ui,sans-serif">
+  <defs><filter id="s"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity=".06"/></filter></defs>
+  <rect width="960" height="480" rx="12" fill="#f8f9fa"/>
+  <!-- Header -->
+  <rect width="960" height="50" rx="12" fill="#fff"/>
+  <rect y="46" width="960" height="4" fill="#fff"/>
+  <text x="24" y="32" font-size="14" font-weight="700" fill="#3b82f6" font-family="monospace">📈 Trading System</text>
+  <line x1="0" y1="50" x2="960" y2="50" stroke="#e5e7eb"/>
+  <!-- Active tab -->
+  <rect y="50" width="960" height="38" fill="#fff"/>
+  <text x="232" y="74" font-size="13" font-weight="600" fill="#111">台股掃描</text>
+  <line x1="232" y1="84" x2="300" y2="84" stroke="#111" stroke-width="2"/>
+  <line x1="0" y1="88" x2="960" y2="88" stroke="#e5e7eb"/>
+  <!-- Strategy buttons -->
+  <g transform="translate(20,100)">
+    <rect width="90" height="30" rx="4" fill="#eff6ff" stroke="#3b82f6"/>
+    <text x="12" y="20" font-size="11" fill="#3b82f6" font-weight="500">🛡️ 趨勢策略</text>
+    <rect x="100" width="82" height="30" rx="4" fill="#fff" stroke="#e5e7eb"/>
+    <text x="112" y="20" font-size="11" fill="#6b7280">🏹 ICT 策略</text>
+    <rect x="192" width="72" height="30" rx="4" fill="#fff" stroke="#e5e7eb"/>
+    <text x="204" y="20" font-size="11" fill="#6b7280">📊 基本面</text>
+  </g>
+  <!-- Progress bar -->
+  <g transform="translate(20,145)">
+    <rect width="920" height="40" rx="6" fill="#f3f4f6"/>
+    <text x="12" y="18" font-size="11" fill="#6b7280" font-family="monospace">掃描完成 · 即時高分（18分）</text>
+    <text x="850" y="18" font-size="11" fill="#3b82f6" font-family="monospace">433 / 433</text>
+    <rect x="12" y="26" width="896" height="6" rx="3" fill="#e5e7eb"/>
+    <rect x="12" y="26" width="896" height="6" rx="3" fill="url(#grad)"/>
+    <linearGradient id="grad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#10b981"/></linearGradient>
+  </g>
+  <!-- Scan result cards -->
+  <g transform="translate(20,200)">
+    <!-- Card 1 -->
+    <rect width="220" height="165" rx="8" fill="#fff" filter="url(#s)" stroke="#e5e7eb" stroke-width=".5"/>
+    <text x="14" y="24" font-size="14" font-weight="700" fill="#111" font-family="monospace">3067</text>
+    <text x="62" y="24" font-size="11" fill="#6b7280">全域</text>
+    <text x="170" y="30" font-size="22" font-weight="700" fill="#10b981" font-family="monospace">6/6</text>
+    <text x="14" y="44" font-size="10" fill="#6b7280" font-family="monospace">收 19.95 ｜ ADX 25.83</text>
+    <!-- Signal dots -->
+    <g transform="translate(14,54)">
+      <rect width="46" height="16" rx="2" fill="#ecfdf5"/><text x="4" y="12" font-size="8" fill="#10b981" font-weight="600">均線排列</text>
+      <rect x="50" width="46" height="16" rx="2" fill="#ecfdf5"/><text x="54" y="12" font-size="8" fill="#10b981" font-weight="600">三線齊揚</text>
+      <rect x="100" width="42" height="16" rx="2" fill="#ecfdf5"/><text x="104" y="12" font-size="8" fill="#10b981" font-weight="600">ADX>25</text>
+      <rect y="20" width="42" height="16" rx="2" fill="#ecfdf5"/><text x="4" y="32" font-size="8" fill="#10b981" font-weight="600">MACD紅</text>
+      <rect x="46" y="20" width="28" height="16" rx="2" fill="#ecfdf5"/><text x="50" y="32" font-size="8" fill="#10b981" font-weight="600">爆量</text>
+      <rect x="78" y="20" width="32" height="16" rx="2" fill="#ecfdf5"/><text x="82" y="32" font-size="8" fill="#10b981" font-weight="600">5穿20</text>
+    </g>
+    <text x="14" y="112" font-size="10" fill="#6b7280" font-family="monospace">停損 16.07 ｜ 目標 27.71</text>
+    <rect x="14" y="125" width="56" height="24" rx="4" fill="#f3f4f6"/>
+    <text x="24" y="141" font-size="10" fill="#6b7280">研究</text>
+    <!-- Card 2 -->
+    <g transform="translate(235,0)">
+      <rect width="220" height="165" rx="8" fill="#fff" filter="url(#s)" stroke="#e5e7eb" stroke-width=".5"/>
+      <text x="14" y="24" font-size="14" font-weight="700" fill="#111" font-family="monospace">3071</text>
+      <text x="62" y="24" font-size="11" fill="#6b7280">協禧</text>
+      <text x="170" y="30" font-size="22" font-weight="700" fill="#f59e0b" font-family="monospace">4/6</text>
+      <text x="14" y="44" font-size="10" fill="#6b7280" font-family="monospace">收 29.55 ｜ ADX 31.93</text>
+      <g transform="translate(14,54)">
+        <rect width="46" height="16" rx="2" fill="#ecfdf5"/><text x="4" y="12" font-size="8" fill="#10b981" font-weight="600">均線排列</text>
+        <rect x="50" width="46" height="16" rx="2" fill="#ecfdf5"/><text x="54" y="12" font-size="8" fill="#10b981" font-weight="600">三線齊揚</text>
+        <rect x="100" width="42" height="16" rx="2" fill="#ecfdf5"/><text x="104" y="12" font-size="8" fill="#10b981" font-weight="600">ADX>25</text>
+        <rect y="20" width="42" height="16" rx="2" fill="#ecfdf5"/><text x="4" y="32" font-size="8" fill="#10b981" font-weight="600">MACD紅</text>
+        <rect x="46" y="20" width="28" height="16" rx="2" fill="#f3f4f6"/><text x="50" y="32" font-size="8" fill="#9ca3af" font-weight="600">爆量</text>
+        <rect x="78" y="20" width="32" height="16" rx="2" fill="#f3f4f6"/><text x="82" y="32" font-size="8" fill="#9ca3af" font-weight="600">5穿20</text>
+      </g>
+      <text x="14" y="112" font-size="10" fill="#6b7280" font-family="monospace">停損 22.09 ｜ 目標 44.47</text>
+    </g>
+    <!-- Card 3 -->
+    <g transform="translate(470,0)">
+      <rect width="220" height="165" rx="8" fill="#fff" filter="url(#s)" stroke="#e5e7eb" stroke-width=".5"/>
+      <text x="14" y="24" font-size="14" font-weight="700" fill="#111" font-family="monospace">3081</text>
+      <text x="62" y="24" font-size="11" fill="#6b7280">聯亞</text>
+      <text x="170" y="30" font-size="22" font-weight="700" fill="#10b981" font-family="monospace">5/6</text>
+      <text x="14" y="44" font-size="10" fill="#6b7280" font-family="monospace">收 2175 ｜ ADX 42.28</text>
+      <g transform="translate(14,54)">
+        <rect width="46" height="16" rx="2" fill="#ecfdf5"/><text x="4" y="12" font-size="8" fill="#10b981" font-weight="600">均線排列</text>
+        <rect x="50" width="46" height="16" rx="2" fill="#ecfdf5"/><text x="54" y="12" font-size="8" fill="#10b981" font-weight="600">三線齊揚</text>
+        <rect x="100" width="42" height="16" rx="2" fill="#ecfdf5"/><text x="104" y="12" font-size="8" fill="#10b981" font-weight="600">ADX>25</text>
+        <rect y="20" width="42" height="16" rx="2" fill="#ecfdf5"/><text x="4" y="32" font-size="8" fill="#10b981" font-weight="600">MACD紅</text>
+        <rect x="46" y="20" width="28" height="16" rx="2" fill="#ecfdf5"/><text x="50" y="32" font-size="8" fill="#10b981" font-weight="600">爆量</text>
+        <rect x="78" y="20" width="32" height="16" rx="2" fill="#f3f4f6"/><text x="82" y="32" font-size="8" fill="#9ca3af" font-weight="600">5穿20</text>
+      </g>
+      <text x="14" y="112" font-size="10" fill="#6b7280" font-family="monospace">停損 1110 ｜ 目標 4304</text>
+    </g>
+    <!-- Card 4 -->
+    <g transform="translate(705,0)">
+      <rect width="220" height="165" rx="8" fill="#fff" filter="url(#s)" stroke="#e5e7eb" stroke-width=".5"/>
+      <text x="14" y="24" font-size="14" font-weight="700" fill="#111" font-family="monospace">3088</text>
+      <text x="62" y="24" font-size="11" fill="#6b7280">艾訊</text>
+      <text x="170" y="30" font-size="22" font-weight="700" fill="#10b981" font-family="monospace">5/6</text>
+      <text x="14" y="44" font-size="10" fill="#6b7280" font-family="monospace">收 92.6 ｜ ADX 33.42</text>
+      <g transform="translate(14,54)">
+        <rect width="46" height="16" rx="2" fill="#ecfdf5"/><text x="4" y="12" font-size="8" fill="#10b981" font-weight="600">均線排列</text>
+        <rect x="50" width="46" height="16" rx="2" fill="#ecfdf5"/><text x="54" y="12" font-size="8" fill="#10b981" font-weight="600">三線齊揚</text>
+        <rect x="100" width="42" height="16" rx="2" fill="#ecfdf5"/><text x="104" y="12" font-size="8" fill="#10b981" font-weight="600">ADX>25</text>
+        <rect y="20" width="42" height="16" rx="2" fill="#ecfdf5"/><text x="4" y="32" font-size="8" fill="#10b981" font-weight="600">MACD紅</text>
+        <rect x="46" y="20" width="28" height="16" rx="2" fill="#ecfdf5"/><text x="50" y="32" font-size="8" fill="#10b981" font-weight="600">爆量</text>
+        <rect x="78" y="20" width="32" height="16" rx="2" fill="#f3f4f6"/><text x="82" y="32" font-size="8" fill="#9ca3af" font-weight="600">5穿20</text>
+      </g>
+      <text x="14" y="112" font-size="10" fill="#6b7280" font-family="monospace">停損 76.46 ｜ 目標 124.88</text>
+    </g>
+  </g>
+  <!-- Footer note -->
+  <text x="24" y="464" font-size="10" fill="#9ca3af" font-family="monospace">⚠ 技術指標篩選，非投資建議。已掃描 433 檔，曝險模式：2%</text>
+</svg>

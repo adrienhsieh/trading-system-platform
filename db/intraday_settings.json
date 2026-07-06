@@ -1,0 +1,8 @@
+{
+  "interval": 10,
+  "weights": {
+    "trend": 40,
+    "ict": 30,
+    "fundamental": 30
+  }
+}

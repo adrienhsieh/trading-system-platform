@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 380" font-family="'Segoe UI','Noto Sans TC',system-ui,sans-serif">
+  <defs><filter id="s"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity=".06"/></filter></defs>
+  <rect width="960" height="380" rx="12" fill="#f8f9fa"/>
+  <rect width="960" height="44" rx="12" fill="#fff"/><rect y="40" width="960" height="4" fill="#fff"/>
+  <text x="24" y="28" font-size="14" font-weight="700" fill="#3b82f6" font-family="monospace">📈 Trading System</text>
+  <line x1="0" y1="44" x2="960" y2="44" stroke="#e5e7eb"/>
+  <rect y="44" width="960" height="36" fill="#fff"/>
+  <text x="400" y="68" font-size="13" font-weight="600" fill="#111">AI 情報</text>
+  <line x1="400" y1="76" x2="456" y2="76" stroke="#111" stroke-width="2"/>
+  <line x1="0" y1="80" x2="960" y2="80" stroke="#e5e7eb"/>
+  <!-- AI Sentiment -->
+  <g transform="translate(20,96)">
+    <rect width="440" height="130" rx="10" fill="#fff" filter="url(#s)" stroke="#e5e7eb" stroke-width=".5"/>
+    <text x="16" y="24" font-size="12" font-weight="600" fill="#111">🤖 AI 市場情緒</text>
+    <text x="340" y="24" font-size="10" fill="#9ca3af">Groq · Llama 3.3</text>
+    <rect x="16" y="36" width="408" height="40" rx="6" fill="#ecfdf5"/>
+    <text x="30" y="62" font-size="14" font-weight="600" fill="#10b981">📈 偏多（Bullish）</text>
+    <text x="230" y="62" font-size="12" fill="#6b7280">信心度 72%</text>
+    <text x="16" y="96" font-size="11" fill="#6b7280" style="line-height:1.6">台積電法說會展望優於預期，帶動半導體族群走強。</text>
+    <text x="16" y="114" font-size="11" fill="#6b7280">外資連三日買超，短線多方格局延續。</text>
+  </g>
+  <!-- X/Twitter Intel -->
+  <g transform="translate(480,96)">
+    <rect width="460" height="130" rx="10" fill="#fff" filter="url(#s)" stroke="#e5e7eb" stroke-width=".5"/>
+    <text x="16" y="24" font-size="12" font-weight="600" fill="#111">🐦 X 市場討論</text>
+    <text x="350" y="24" font-size="10" fill="#9ca3af">過去 24 小時</text>
+    <!-- Sentiment bars -->
+    <text x="16" y="50" font-size="10" fill="#10b981" font-family="monospace">Bullish  11</text>
+    <rect x="100" y="40" width="110" height="12" rx="2" fill="#ecfdf5"/>
+    <rect x="100" y="40" width="110" height="12" rx="2" fill="#10b981" opacity=".3"/>
+    <text x="16" y="70" font-size="10" fill="#ef4444" font-family="monospace">Bearish   7</text>
+    <rect x="100" y="60" width="70" height="12" rx="2" fill="#fef2f2"/>
+    <rect x="100" y="60" width="70" height="12" rx="2" fill="#ef4444" opacity=".3"/>
+    <text x="16" y="90" font-size="10" fill="#6b7280" font-family="monospace">Neutral   7</text>
+    <rect x="100" y="80" width="70" height="12" rx="2" fill="#f3f4f6"/>
+    <text x="16" y="118" font-size="10" fill="#9ca3af">來源：Google News + Groq 情緒分析</text>
+  </g>
+  <!-- Daily Summary -->
+  <g transform="translate(20,242)">
+    <rect width="920" height="120" rx="10" fill="#fff" filter="url(#s)" stroke="#e5e7eb" stroke-width=".5"/>
+    <text x="16" y="24" font-size="12" font-weight="600" fill="#111">📋 每日情報摘要</text>
+    <text x="150" y="24" font-size="10" fill="#9ca3af">AI 生成（每日 08:00）</text>
+    <rect x="16" y="36" width="888" height="70" rx="6" fill="#f8f9fa" stroke="#e5e7eb"/>
+    <text x="28" y="56" font-size="12" fill="#374151">今日台股受惠於美股科技股強勢反彈，加權指數上漲 1.14%，站穩 20EMA 之上。</text>
+    <text x="28" y="76" font-size="12" fill="#374151">半導體族群表現突出，台積電、聯發科領漲。外資回補買超，短線偏多操作。</text>
+    <text x="28" y="96" font-size="12" fill="#6b7280">建議：趨勢策略可積極進場高分候選，ICT 策略留意回檔至 OB 支撐區。</text>
+  </g>
+</svg>

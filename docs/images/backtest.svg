@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" font-family="'Segoe UI','Noto Sans TC',system-ui,sans-serif">
+  <defs><filter id="s"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity=".06"/></filter></defs>
+  <rect width="960" height="420" rx="12" fill="#f8f9fa"/>
+  <!-- Header -->
+  <rect width="960" height="44" rx="12" fill="#fff"/><rect y="40" width="960" height="4" fill="#fff"/>
+  <text x="24" y="28" font-size="14" font-weight="700" fill="#3b82f6" font-family="monospace">📈 Trading System</text>
+  <line x1="0" y1="44" x2="960" y2="44" stroke="#e5e7eb"/>
+  <rect y="44" width="960" height="36" fill="#fff"/>
+  <text x="312" y="68" font-size="13" font-weight="600" fill="#111">回測</text>
+  <line x1="312" y1="76" x2="344" y2="76" stroke="#111" stroke-width="2"/>
+  <line x1="0" y1="80" x2="960" y2="80" stroke="#e5e7eb"/>
+  <!-- Stats cards -->
+  <g transform="translate(20,94)">
+    <rect width="140" height="70" rx="8" fill="#fff" filter="url(#s)" stroke="#e5e7eb" stroke-width=".5"/>
+    <text x="14" y="20" font-size="9" fill="#9ca3af" font-family="monospace">總交易</text>
+    <text x="14" y="48" font-size="24" font-weight="700" fill="#111" font-family="monospace">12</text>
+    <text x="14" y="62" font-size="10" fill="#6b7280">8W / 4L</text>
+  </g>
+  <g transform="translate(172,94)">
+    <rect width="140" height="70" rx="8" fill="#fff" filter="url(#s)" stroke="#e5e7eb" stroke-width=".5"/>
+    <text x="14" y="20" font-size="9" fill="#9ca3af" font-family="monospace">勝率</text>
+    <text x="14" y="48" font-size="24" font-weight="700" fill="#111" font-family="monospace">66.7%</text>
+    <text x="14" y="62" font-size="10" fill="#6b7280">均贏 +3.2%</text>
+  </g>
+  <g transform="translate(324,94)">
+    <rect width="140" height="70" rx="8" fill="#fff" filter="url(#s)" stroke="#e5e7eb" stroke-width=".5"/>
+    <text x="14" y="20" font-size="9" fill="#9ca3af" font-family="monospace">盈虧比</text>
+    <text x="14" y="48" font-size="24" font-weight="700" fill="#111" font-family="monospace">2.84</text>
+    <text x="14" y="62" font-size="10" fill="#6b7280">均虧 -1.5%</text>
+  </g>
+  <g transform="translate(476,94)">
+    <rect width="140" height="70" rx="8" fill="#fff" filter="url(#s)" stroke="#e5e7eb" stroke-width=".5"/>
+    <text x="14" y="20" font-size="9" fill="#9ca3af" font-family="monospace">最大回撤</text>
+    <text x="14" y="48" font-size="24" font-weight="700" fill="#ef4444" font-family="monospace">5.2%</text>
+    <text x="14" y="62" font-size="10" fill="#6b7280">峰谷回撤</text>
+  </g>
+  <g transform="translate(628,94)">
+    <rect width="312" height="70" rx="8" fill="#fff" filter="url(#s)" stroke="#e5e7eb" stroke-width=".5"/>
+    <text x="14" y="20" font-size="9" fill="#9ca3af" font-family="monospace">總報酬 · 趨勢策略 · 2330</text>
+    <text x="14" y="48" font-size="24" font-weight="700" fill="#10b981" font-family="monospace">+18.2%</text>
+    <text x="14" y="62" font-size="10" fill="#6b7280">+182,400 元</text>
+  </g>
+  <!-- Equity curve -->
+  <g transform="translate(20,178)">
+    <rect width="920" height="226" rx="8" fill="#fff" filter="url(#s)" stroke="#e5e7eb" stroke-width=".5"/>
+    <text x="16" y="20" font-size="11" fill="#6b7280" font-family="monospace" letter-spacing="1.5" font-weight="700">資產曲線</text>
+    <!-- Grid -->
+    <line x1="50" y1="40" x2="900" y2="40" stroke="#f3f4f6"/>
+    <line x1="50" y1="80" x2="900" y2="80" stroke="#f3f4f6"/>
+    <line x1="50" y1="120" x2="900" y2="120" stroke="#f3f4f6"/>
+    <line x1="50" y1="160" x2="900" y2="160" stroke="#f3f4f6"/>
+    <line x1="50" y1="200" x2="900" y2="200" stroke="#f3f4f6"/>
+    <!-- Baseline -->
+    <line x1="50" y1="160" x2="900" y2="160" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="4" y="164" font-size="8" fill="#9ca3af" font-family="monospace">1.0M</text>
+    <text x="4" y="44" font-size="8" fill="#9ca3af" font-family="monospace">1.2M</text>
+    <text x="4" y="204" font-size="8" fill="#9ca3af" font-family="monospace">0.9M</text>
+    <!-- Monte Carlo band -->
+    <polygon points="80,165 150,162 220,158 290,160 360,155 430,148 500,142 570,135 640,130 710,125 780,118 850,110 890,105 890,115 850,122 780,130 710,138 640,145 570,150 500,155 430,160 360,168 290,172 220,170 150,175 80,178" fill="#3b82f6" opacity=".06"/>
+    <!-- Equity line -->
+    <polyline points="80,168 150,166 220,162 290,165 360,158 430,150 500,145 570,138 640,132 710,128 780,120 850,112 890,108" fill="none" stroke="#3b82f6" stroke-width="2.5"/>
+    <!-- Time labels -->
+    <text x="80" y="216" font-size="8" fill="#9ca3af" font-family="monospace">2024/01</text>
+    <text x="290" y="216" font-size="8" fill="#9ca3af" font-family="monospace">2024/06</text>
+    <text x="500" y="216" font-size="8" fill="#9ca3af" font-family="monospace">2025/01</text>
+    <text x="710" y="216" font-size="8" fill="#9ca3af" font-family="monospace">2025/06</text>
+    <text x="860" y="216" font-size="8" fill="#9ca3af" font-family="monospace">2025/12</text>
+    <!-- Legend -->
+    <line x1="760" y1="20" x2="780" y2="20" stroke="#3b82f6" stroke-width="2"/>
+    <text x="784" y="24" font-size="9" fill="#6b7280" font-family="monospace">Equity</text>
+    <rect x="830" y="14" width="30" height="10" rx="2" fill="#3b82f6" opacity=".1"/>
+    <text x="864" y="24" font-size="9" fill="#6b7280" font-family="monospace">MC p5-p95</text>
+  </g>
+</svg>

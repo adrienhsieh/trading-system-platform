@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" font-family="'Segoe UI','Noto Sans TC',system-ui,sans-serif">
+  <defs>
+    <filter id="shadow"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity=".06"/></filter>
+    <linearGradient id="up" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#10b981" stop-opacity=".05"/><stop offset="1" stop-color="#10b981" stop-opacity=".2"/></linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="960" height="580" rx="12" fill="#f8f9fa"/>
+  <!-- Nav row 1 -->
+  <rect width="960" height="44" fill="#fff" rx="12"/>
+  <rect y="40" width="960" height="4" fill="#fff"/>
+  <text x="24" y="28" font-size="14" font-weight="700" fill="#3b82f6" font-family="monospace">📈 Trading System</text>
+  <text x="190" y="28" font-size="10" fill="#9ca3af" font-family="monospace">TAIEX</text>
+  <text x="230" y="28" font-size="11" fill="#111" font-weight="600" font-family="monospace">36,711</text>
+  <text x="285" y="28" font-size="10" fill="#10b981" font-family="monospace">▲1.14%</text>
+  <text x="340" y="28" font-size="10" fill="#d1d5db">│</text>
+  <text x="355" y="28" font-size="10" fill="#9ca3af" font-family="monospace">NASDAQ</text>
+  <text x="405" y="28" font-size="11" fill="#111" font-weight="600" font-family="monospace">23,639</text>
+  <text x="465" y="28" font-size="10" fill="#10b981" font-family="monospace">▲1.96%</text>
+  <text x="520" y="28" font-size="10" fill="#d1d5db">│</text>
+  <text x="535" y="28" font-size="10" fill="#9ca3af" font-family="monospace">S&amp;P500</text>
+  <text x="585" y="28" font-size="11" fill="#111" font-weight="600" font-family="monospace">6,967</text>
+  <text x="630" y="28" font-size="10" fill="#10b981" font-family="monospace">▲1.18%</text>
+  <line x1="0" y1="44" x2="960" y2="44" stroke="#e5e7eb"/>
+  <!-- Nav row 2: tabs -->
+  <rect y="44" width="960" height="40" fill="#fff"/>
+  <text x="24" y="70" font-size="13" font-weight="600" fill="#111">持股戰情</text>
+  <line x1="24" y1="80" x2="88" y2="80" stroke="#111" stroke-width="2"/>
+  <text x="108" y="70" font-size="13" fill="#9ca3af">觀察名單</text>
+  <text x="192" y="70" font-size="13" fill="#9ca3af">台股掃描</text>
+  <text x="272" y="70" font-size="13" fill="#9ca3af">回測</text>
+  <text x="320" y="70" font-size="13" fill="#9ca3af">財經情報</text>
+  <text x="400" y="70" font-size="13" fill="#9ca3af">AI 情報</text>
+  <text x="472" y="70" font-size="13" fill="#9ca3af">主題搜尋</text>
+  <line x1="0" y1="84" x2="960" y2="84" stroke="#e5e7eb"/>
+  <!-- Summary cards -->
+  <g transform="translate(20,100)">
+    <rect width="218" height="80" rx="10" fill="#fff" filter="url(#shadow)" stroke="#e5e7eb" stroke-width=".5"/>
+    <text x="16" y="24" font-size="11" fill="#9ca3af">總資產</text>
+    <text x="16" y="52" font-size="22" font-weight="700" fill="#111" font-family="monospace">$4,529,594</text>
+    <text x="16" y="68" font-size="11" fill="#10b981" font-family="monospace">+2.34%</text>
+  </g>
+  <g transform="translate(250,100)">
+    <rect width="218" height="80" rx="10" fill="#fff" filter="url(#shadow)" stroke="#e5e7eb" stroke-width=".5"/>
+    <text x="16" y="24" font-size="11" fill="#9ca3af">持倉數</text>
+    <text x="16" y="52" font-size="22" font-weight="700" fill="#111">3</text>
+    <text x="16" y="68" font-size="11" fill="#6b7280">2 盈利 · 1 虧損</text>
+  </g>
+  <g transform="translate(480,100)">
+    <rect width="218" height="80" rx="10" fill="#fff" filter="url(#shadow)" stroke="#e5e7eb" stroke-width=".5"/>
+    <text x="16" y="24" font-size="11" fill="#9ca3af">總風險曝露</text>
+    <text x="16" y="52" font-size="22" font-weight="700" fill="#111" font-family="monospace">4.8%</text>
+    <text x="16" y="68" font-size="11" fill="#10b981">正常 2%</text>
+  </g>
+  <g transform="translate(710,100)">
+    <rect width="230" height="80" rx="10" fill="#fff" filter="url(#shadow)" stroke="#e5e7eb" stroke-width=".5"/>
+    <text x="16" y="24" font-size="11" fill="#9ca3af">大盤濾網</text>
+    <text x="16" y="52" font-size="16" font-weight="600" fill="#10b981">✅ 站上 20EMA</text>
+    <text x="16" y="68" font-size="11" fill="#6b7280">EMA20: 36,200</text>
+  </g>
+  <!-- Position card with K-line -->
+  <g transform="translate(20,200)">
+    <rect width="920" height="360" rx="10" fill="#fff" filter="url(#shadow)" stroke="#e5e7eb" stroke-width=".5"/>
+    <!-- Header -->
+    <text x="20" y="30" font-size="14" font-weight="700" fill="#111" font-family="monospace">2330</text>
+    <text x="72" y="30" font-size="14" fill="#374151">台積電</text>
+    <rect x="130" y="16" width="56" height="20" rx="4" fill="#ecfdf5"/>
+    <text x="140" y="30" font-size="10" fill="#10b981" font-weight="500">+2.22%</text>
+    <text x="620" y="24" font-size="10" fill="#9ca3af" font-family="monospace">現價</text>
+    <text x="620" y="38" font-size="12" fill="#111" font-weight="600" font-family="monospace">1,898.13</text>
+    <text x="700" y="24" font-size="10" fill="#9ca3af" font-family="monospace">進場</text>
+    <text x="700" y="38" font-size="12" fill="#6b7280" font-family="monospace">1,800.00</text>
+    <text x="780" y="24" font-size="10" fill="#9ca3af" font-family="monospace">停損</text>
+    <text x="780" y="38" font-size="12" fill="#ef4444" font-family="monospace">1,650.00</text>
+    <text x="860" y="24" font-size="10" fill="#9ca3af" font-family="monospace">損益</text>
+    <text x="860" y="38" font-size="12" fill="#10b981" font-weight="600" font-family="monospace">+98,130</text>
+    <line x1="0" y1="50" x2="920" y2="50" stroke="#e5e7eb"/>
+    <!-- K-line chart area -->
+    <rect x="12" y="58" width="896" height="290" rx="8" fill="#fafafa" stroke="#f0f0f0"/>
+    <!-- Grid -->
+    <line x1="60" y1="80" x2="890" y2="80" stroke="#f3f4f6"/>
+    <line x1="60" y1="130" x2="890" y2="130" stroke="#f3f4f6"/>
+    <line x1="60" y1="180" x2="890" y2="180" stroke="#f3f4f6"/>
+    <line x1="60" y1="230" x2="890" y2="230" stroke="#f3f4f6"/>
+    <line x1="60" y1="280" x2="890" y2="280" stroke="#f3f4f6"/>
+    <!-- Price labels -->
+    <text x="16" y="84" font-size="9" fill="#9ca3af" font-family="monospace">2,200</text>
+    <text x="16" y="134" font-size="9" fill="#9ca3af" font-family="monospace">2,000</text>
+    <text x="16" y="184" font-size="9" fill="#9ca3af" font-family="monospace">1,800</text>
+    <text x="16" y="234" font-size="9" fill="#9ca3af" font-family="monospace">1,600</text>
+    <!-- EMA lines -->
+    <polyline points="100,260 150,250 200,235 250,220 300,210 350,195 400,180 450,170 500,165 550,155 600,145 650,140 700,130 750,125 800,118 850,110" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity=".7"/>
+    <polyline points="100,270 150,262 200,250 250,238 300,225 350,212 400,200 450,190 500,182 550,175 600,168 650,160 700,152 750,145 800,138 850,130" fill="none" stroke="#3b82f6" stroke-width="1.5" opacity=".7"/>
+    <polyline points="100,280 150,275 200,268 250,258 300,248 350,238 400,228 450,218 500,210 550,202 600,195 650,188 700,180 750,172 800,165 850,158" fill="none" stroke="#a855f7" stroke-width="1.5" opacity=".5"/>
+    <!-- Candles -->
+    <g fill="#10b981"><rect x="98" y="248" width="6" height="18" rx="1"/><rect x="148" y="238" width="6" height="20" rx="1"/><rect x="248" y="208" width="6" height="18" rx="1"/><rect x="298" y="198" width="6" height="16" rx="1"/><rect x="398" y="165" width="6" height="22" rx="1"/><rect x="448" y="158" width="6" height="18" rx="1"/><rect x="548" y="140" width="6" height="20" rx="1"/><rect x="598" y="130" width="6" height="22" rx="1"/><rect x="698" y="115" width="6" height="20" rx="1"/><rect x="798" y="100" width="6" height="24" rx="1"/><rect x="848" y="95" width="6" height="18" rx="1"/></g>
+    <g fill="#ef4444"><rect x="198" y="225" width="6" height="14" rx="1"/><rect x="348" y="185" width="6" height="12" rx="1"/><rect x="498" y="152" width="6" height="14" rx="1"/><rect x="648" y="128" width="6" height="16" rx="1"/><rect x="748" y="110" width="6" height="18" rx="1"/></g>
+    <!-- Price lines -->
+    <line x1="60" y1="180" x2="890" y2="180" stroke="#9ca3af" stroke-width="1" stroke-dasharray="4,4" opacity=".6"/>
+    <text x="892" y="184" font-size="9" fill="#9ca3af" font-family="monospace">進場 1,800</text>
+    <line x1="60" y1="240" x2="890" y2="240" stroke="#ef4444" stroke-width="1" stroke-dasharray="6,3"/>
+    <text x="892" y="244" font-size="9" fill="#ef4444" font-family="monospace">停損 1,650</text>
+    <line x1="60" y1="80" x2="890" y2="80" stroke="#10b981" stroke-width="1" stroke-dasharray="6,3"/>
+    <text x="892" y="84" font-size="9" fill="#10b981" font-family="monospace">目標 2,200</text>
+    <line x1="60" y1="260" x2="890" y2="260" stroke="#6366f1" stroke-width="1" stroke-dasharray="3,3" opacity=".5"/>
+    <text x="892" y="264" font-size="9" fill="#6366f1" font-family="monospace">Swing Low</text>
+    <!-- Legend -->
+    <line x1="720" y1="68" x2="740" y2="68" stroke="#f59e0b" stroke-width="2"/>
+    <text x="744" y="72" font-size="9" fill="#6b7280" font-family="monospace">EMA5</text>
+    <line x1="780" y1="68" x2="800" y2="68" stroke="#3b82f6" stroke-width="2"/>
+    <text x="804" y="72" font-size="9" fill="#6b7280" font-family="monospace">EMA20</text>
+    <line x1="844" y1="68" x2="864" y2="68" stroke="#a855f7" stroke-width="2"/>
+    <text x="868" y="72" font-size="9" fill="#6b7280" font-family="monospace">EMA60</text>
+    <!-- Time axis -->
+    <text x="100" y="310" font-size="8" fill="#9ca3af" font-family="monospace">2025/01</text>
+    <text x="300" y="310" font-size="8" fill="#9ca3af" font-family="monospace">2025/03</text>
+    <text x="500" y="310" font-size="8" fill="#9ca3af" font-family="monospace">2025/05</text>
+    <text x="700" y="310" font-size="8" fill="#9ca3af" font-family="monospace">2025/07</text>
+    <text x="850" y="310" font-size="8" fill="#9ca3af" font-family="monospace">2025/09</text>
+  </g>
+</svg>
