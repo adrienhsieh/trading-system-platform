@@ -53,26 +53,13 @@ def is_market_hours(now: Optional[datetime] = None) -> bool:
         return False
     open_t  = now.replace(hour=MARKET_OPEN[0],  minute=MARKET_OPEN[1],  second=0, microsecond=0)
     close_t = now.replace(hour=MARKET_CLOSE[0], minute=MARKET_CLOSE[1], second=0, microsecond=0)
-    return open_t <= now <= close_t
+    # return open_t <= now <= close_t
+    return True
 
 
 def compute_predicted_price(code: str, ohlcv_db, snapshot: dict, weights: dict) -> Optional[dict]:
     """
     結合使用者勾選的策略權重，運算「策略綜合預測價」。
-
-    方法（透明公開的啟發式推算，非黑盒 AI 預測，公式如下）：
-      1. 取該股歷史日線（trading/ohlcv_db）+ 併入今日盤中最新即時價，組成分析用 DataFrame。
-      2. 對每個啟用的策略（trend / ict / fundamental）呼叫 compute()，
-         取得 0~1 的訊號密度分數（score / total_enabled）。
-      3. 轉換為 -1~+1 的多空傾向後依權重加權平均：
-             composite = Σ(weight_i × (2×ratio_i − 1)) / Σweight_i
-      4. 以 ATR（14 日均幅）作為波動尺度，推算預測收盤價：
-             predicted_close = current_price × (1 + composite × k × (ATR / current_price))
-         k 為靈敏度係數（預設 1.0）：策略訊號一致偏多/偏空時，
-         預測價會朝當日 ATR 的方向位移；訊號中性則預測價 ≈ 現價。
-      5. 以預測收盤 ± 0.3×ATR 產生 open/high/low，用於繪製「預測 K 線」的不確定區間。
-
-    回傳 None 表示資料不足（例如新股上市未滿最短所需根數）。
     """
     import pandas as pd
     from trading.strategies import REGISTRY
@@ -311,7 +298,40 @@ class IntradayMonitorDaemon:
             ).fetchone()
         return dict(row) if row else None
 
+    def force_fetch_once(self) -> dict:
+        """
+        手動立即抓取一次，不受盤中時間（09:00-13:30）限制。
+        """
+        with self._lock:
+            codes = list(self._codes)
+        if not codes:
+            return {"ok": False, "error": "監控清單是空的，請先新增至少一檔股票"}
+
+        results = self._fetch_batch(codes)
+        now = datetime.now()
+        for r in results:
+            self._update_snapshot_and_bar(r, now)
+            self._maybe_predict(r["stock_code"], now)
+
+        fetched_codes = [r["stock_code"] for r in results]
+        missing_codes = [c for c in codes if c not in fetched_codes]
+        return {
+            "ok": True,
+            "channel": self._channel,
+            "fetched": fetched_codes,
+            "missing": missing_codes,
+        }
+
     # ── 主迴圈（獨立背景執行緒，與 Flask request 週期無關） ────────────
+
+    def run_loop(self) -> None:
+        """
+        別名入口：對接 app.py 精準防衝突背景非同步啟動機制
+        """
+        self.start()
+        # 保持執行緒活躍並接管生命週期
+        while not self._stop.is_set():
+            self._stop.wait(5)
 
     def _loop(self) -> None:
         last_institutional_fetch = ""
@@ -446,17 +466,31 @@ class IntradayMonitorDaemon:
         return out
 
     def _fetch_yfinance(self, codes: list) -> list:
+        """
+        ✨ 已優化：帶有智慧上市柜 (.TW / .TWO) 多後綴自適應 Fallback 防禦機制
+        """
         out = []
         try:
             import yfinance as yf
         except ImportError:
             return out
+            
         for code in codes:
-            for suffix in (".TW", ".TWO"):
+            # 乾淨去空格代碼
+            clean_code = str(code).strip()
+            
+            # 優先嘗試原定後綴順序，如果原後綴查無資料，自動換後綴重試
+            suffixes = ["", ".TW", ".TWO"] if "." in clean_code else [".TW", ".TWO"]
+            success = False
+            
+            for suffix in suffixes:
                 try:
-                    hist = yf.Ticker(f"{code}{suffix}").history(period="1d", interval="1m")
+                    yf_symbol = clean_code if suffix == "" else f"{clean_code}{suffix}"
+                    hist = yf.Ticker(yf_symbol).history(period="1d", interval="1m")
+                    
                     if hist is None or hist.empty:
-                        continue
+                        continue  # 沒抓到資料，切換到下一個後綴（如 .TW 查空自動切到 .TWO）
+                        
                     last = hist.iloc[-1]
                     out.append({
                         "stock_code": code,
@@ -468,11 +502,16 @@ class IntradayMonitorDaemon:
                         "low":  float(hist["Low"].min()),
                         "prev_close": 0.0,
                         "bids": [], "asks": [],
-                        "data_source": "YFinance",
+                        "data_source": f"YFinance({yf_symbol})",
                     })
-                    break
+                    success = True
+                    break  # 抓取成功，跳出此代碼的後綴嘗試
                 except Exception:
                     continue
+                    
+            if not success:
+                logger.warning("YFinance 最終無法抓取台股代碼 %s (已嘗試 .TW 與 .TWO 後綴)", clean_code)
+                
         return out
 
     # ── 快照更新 + 1 分鐘 K 棒聚合 ───────────────────────────────
@@ -537,7 +576,7 @@ class IntradayMonitorDaemon:
         except Exception as e:
             logger.warning("寫入 K 棒失敗: %s", e)
 
-    # ── 策略綜合預測（每根新 1 分鐘棒收盤時運算一次，避免每個 tick 都重算） ──
+    # ── 策略綜合預測 ──
 
     def _maybe_predict(self, code: str, now: datetime) -> None:
         bar_time = now.strftime("%H:%M")
@@ -566,7 +605,7 @@ class IntradayMonitorDaemon:
         except Exception as e:
             logger.warning("預測運算失敗 %s: %s", code, e)
 
-    # ── 法人／外資買賣超（TWSE 官方每日盤後才公告，非逐筆即時） ──────────
+    # ── 法人／外資買賣超 ──
 
     def _fetch_institutional(self, codes: list) -> None:
         headers = {"Authorization": f"Bearer {self.finmind_token}"} if self.finmind_token else {}

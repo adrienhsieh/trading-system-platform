@@ -125,6 +125,15 @@ def intraday_status():
     return jsonify({"ok": True, **container.intraday_monitor.get_status()})
 
 
+@intraday_bp.route("/api/intraday/force-fetch", methods=["POST"])
+@require_auth
+def force_fetch():
+    """手動立即抓取一次（測試用），不受盤中 09:00-13:30 限制，方便驗證 Fallback 鏈是否正常。"""
+    result = container.intraday_monitor.force_fetch_once()
+    status = 200 if result.get("ok") else 400
+    return jsonify(result), status
+
+
 @intraday_bp.route("/api/intraday/interval", methods=["GET"])
 @require_auth
 def get_interval():

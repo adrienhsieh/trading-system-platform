@@ -56,6 +56,7 @@ class ServiceContainer:
         self._ohlcv_daemon   = None
         self._coverage_reader = None
         self._intraday_monitor = None
+        self._fundamentals = None
 
     # ── 多租戶專屬資料目錄 ─────────────────────────────────────
 
@@ -207,6 +208,16 @@ class ServiceContainer:
                         finmind_token=os.environ.get("FINMIND_TOKEN", ""),
                     )
         return self._intraday_monitor
+
+    @property
+    def fundamentals(self):
+        """TWSE OpenAPI 基本面／籌碼資料服務（全體共用單例，每日快取）。"""
+        if self._fundamentals is None:
+            with self._lock:
+                if self._fundamentals is None:
+                    from trading.services.fundamentals import FundamentalsService
+                    self._fundamentals = FundamentalsService()
+        return self._fundamentals
 
 
 # 全系統共用的唯一容器實例

@@ -13,6 +13,8 @@ from trading.api.user_config import user_setting_bp
 from trading.api.api_system import api_system          # ← 補上
 from trading.api.auth import api_auth                  # ✨ 多人登入（註冊/登入/個人資料）
 from trading.api.intraday import intraday_bp            # ✨ 即時監控
+from trading.api.fundamentals import fundamentals_bp     # ✨ 基本面／籌碼資料
+from trading.api.thsr import thsr_bp                      # ✨ 高鐵訂票（手動輸入驗證碼）
 
 
 def register_blueprints(app) -> None:
@@ -29,3 +31,5 @@ def register_blueprints(app) -> None:
     app.register_blueprint(user_setting_bp)
     app.register_blueprint(api_system)
     app.register_blueprint(intraday_bp)
+    app.register_blueprint(fundamentals_bp)
+    app.register_blueprint(thsr_bp)

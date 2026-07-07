@@ -1,0 +1,229 @@
+"""
+trading/api/thsr.py — 高鐵全自動搶票（防禦型參數補全 + 路由完美校正版）
+"""
+import base64
+import threading
+import logging
+import time
+
+from flask import Blueprint, g, jsonify, request
+
+from thsr_ticket.remote.http_request import HTTPRequest
+from thsr_ticket.model.web.booking_form.booking_form import BookingForm
+from thsr_ticket.model.web.booking_form.station_mapping import StationMapping
+from thsr_ticket.model.web.booking_form.time_table import TimeTable
+from thsr_ticket.model.web.booking_form.ticket_num import (
+    AdultTicket, ChildTicket, DisabledTicket, ElderTicket, CollegeTicket,
+)
+from thsr_ticket.model.web.confirm_train import ConfirmTrain
+from thsr_ticket.model.web.confirm_ticket import ConfirmTicket
+from thsr_ticket.view_model.avail_trains import AvailTrains
+from thsr_ticket.view_model.error_feedback import ErrorFeedback
+from thsr_ticket.view_model.booking_result import BookingResult
+
+from trading.api.auth import require_auth
+from trading.services.thsr_session import thsr_session_manager
+from trading.thsr_captcha_cleanup import clean_captcha_image
+
+try:
+    import ddddocr
+    ocr = ddddocr.DdddOcr(show_ad=False)
+except ImportError:
+    ocr = None
+
+thsr_bp = Blueprint("thsr", __name__)
+logger = logging.getLogger("trading.thsr")
+
+def _uid() -> str:
+    try:
+        return str(getattr(g, "current_user_id", None) or "default")
+    except Exception:
+        return "default"
+
+def _errors_or_none(html: bytes):
+    errors = ErrorFeedback().parse(html)
+    if errors:
+        return [e.msg for e in errors]
+    return None
+
+def _auto_ocr_and_submit(sess) -> bool:
+    if ocr is None:
+        raise RuntimeError("系統未安裝 ddddocr，無法進行自動化辨識。")
+
+    max_retries = 5
+    if hasattr(sess.client, "session") and sess.client.session:
+        sess.client.session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+            "Accept-Language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Connection": "keep-alive"
+        })
+
+    for attempt in range(1, max_retries + 1):
+        try:
+            logger.info(f"📡 [全自動OCR] 正在與高鐵進行第 {attempt}/{max_retries} 次對接...")
+            book_page = sess.client.request_booking_page()
+            if book_page is None or not getattr(book_page, "content", None):
+                raise ValueError("高鐵首頁回傳空值，請求可能遭官網反爬封鎖。")
+
+            img_resp = sess.client.request_security_code_img(book_page.content)
+            if img_resp is None or not getattr(img_resp, "content", None):
+                raise ValueError("高鐵驗證碼端點未回傳圖片數據。")
+
+            try:
+                img_data = clean_captcha_image(img_resp.content, remove_curve=True)
+            except Exception:
+                img_data = img_resp.content
+
+            parsed_code = ocr.classification(img_data)
+            parsed_code = "".join(c for c in parsed_code if c.isalnum()).strip()
+            logger.info(f"🧠 [全自動OCR] 成功判讀出高鐵驗證碼: 【 {parsed_code} 】")
+            
+            sess.book_form.security_code = parsed_code
+            result = sess.client.submit_booking_form(sess.book_form.get_params())
+            
+            errors = _errors_or_none(result.content)
+            if errors:
+                logger.warning(f"⚠️ 第 {attempt} 次提交遭高鐵退回: {'；'.join(errors)}。自動更換圖片重試...")
+                time.sleep(1.0)
+                continue
+                
+            sess.avail_trains = AvailTrains().parse(result.content)
+            sess.state = "awaiting_train"
+            logger.info("🎉 [全自動OCR] 闖關成功！已取得車次清單。")
+            return True
+        except Exception as e:
+            logger.error(f"❌ [全自動OCR] 第 {attempt} 次異常: {e}")
+            if attempt == max_retries: raise e
+            time.sleep(1.0)
+    raise ValueError(f"連續嘗試 {max_retries} 次 OCR 皆未成功。")
+
+@thsr_bp.route("/stations", methods=["GET"])
+@require_auth
+def stations():
+    return jsonify({
+        "ok": True,
+        "stations": [{"id": s.value, "name": s.name} for s in StationMapping],
+        "time_table": [{"value": t.value, "time": t.time} for t in TimeTable()],
+        "class_type": [{"value": 0, "label": "標準車廂"}, {"value": 1, "label": "商務車廂"}],
+        "seat_prefer": [{"value": "radio17", "label": "無偏好"}, {"value": "radio19", "label": "靠窗"}, {"value": "radio21", "label": "靠走道"}],
+    })
+
+@thsr_bp.route("/start", methods=["POST"])
+@require_auth
+def start():
+    data = request.get_json(silent=True) or {}
+    try:
+        # 🟢 防禦型安全升級：為所有參數加上強大相容性的預設值，杜絕 KeyError
+        book_form = BookingForm()
+        book_form.start_station = int(data.get("start_station", 5))
+        book_form.dest_station = int(data.get("dest_station", 12))
+        book_form.class_type = int(data.get("class_type", 0))
+        book_form.seat_prefer = data.get("seat_prefer", "radio17")
+        book_form.outbound_date = data.get("date")
+        book_form.outbound_time = data.get("time")
+        
+        book_form.adult_ticket_num = AdultTicket().get_code(int(data.get("adult_num", 1)))
+        book_form.child_ticket_num = ChildTicket().get_code(int(data.get("child_num", 0)))
+        book_form.disabled_ticket_num = DisabledTicket().get_code(int(data.get("disabled_num", 0)))
+        book_form.elder_ticket_num = ElderTicket().get_code(int(data.get("elder_num", 0)))
+        book_form.college_ticket_num = CollegeTicket().get_code(int(data.get("college_num", 0)))
+        
+        if not book_form.outbound_date or not book_form.outbound_time:
+            return jsonify({"ok": False, "error": "日期與時間為必填欄位"}), 400
+            
+    except Exception as e:
+        return jsonify({"ok": False, "error": f"安全解析參數錯誤: {e}"}), 400
+
+    current_uid = _uid()
+    session_id = thsr_session_manager.create(current_uid)
+    sess = thsr_session_manager.get(session_id, current_uid)
+    if sess is None: return jsonify({"ok": False, "error": "初始化失敗"}), 500
+
+    sess.client, sess.book_form, sess.state = HTTPRequest(), book_form, "fetching_captcha"
+    threading.Thread(target=_auto_ocr_and_submit, args=(sess,), daemon=True).start()
+
+    return jsonify({"ok": True, "session_id": session_id, "status": "fetching_captcha", "message": "全自動化搶票啟動，AI 背景高速辨識驗證碼中..."}), 202
+
+@thsr_bp.route("/captcha-status", methods=["GET"])
+@require_auth
+def captcha_status():
+    session_id = request.args.get("session_id", "")
+    sess = thsr_session_manager.get(session_id, _uid())
+    if sess is None: return jsonify({"ok": False, "error": "Session 已逾時"}), 404
+
+    if sess.state in ["fetching_captcha", "new"]:
+        return jsonify({"ok": True, "status": "loading", "message": "AI 正在背景極速自動辨識高鐵驗證碼..."})
+    if sess.state == "error":
+        return jsonify({"ok": False, "status": "error", "error": getattr(sess, "error_msg", "自動化辨識異常")})
+    if sess.state == "awaiting_train":
+        return jsonify({
+            "ok": True,
+            "status": "ready_trains",
+            "trains": [{"index": i + 1, "id": t.id, "depart": t.depart, "arrive": t.arrive, "travel_time": t.travel_time, "discount": t.discount} for i, t in enumerate(sess.avail_trains)]
+        })
+    return jsonify({"ok": True, "status": sess.state})
+
+@thsr_bp.route("/select-train", methods=["POST"])
+@require_auth
+def select_train():
+    data = request.get_json(silent=True) or {}
+    session_id = data.get("session_id", "")
+    index = data.get("index")
+    
+    # 檢查 session 是否存在
+    sess = thsr_session_manager.get(session_id, _uid())
+    if sess is None:
+        return jsonify({"ok": False, "error": "Session 已失效或逾時，請重新查詢"}), 404
+    
+    # 檢查是否有車次列表
+    if not sess.avail_trains:
+        return jsonify({"ok": False, "error": "無可用車次，請重新查詢"}), 400
+    
+    try:
+        # 確保 index 合法
+        idx = int(index) - 1
+        if idx < 0 or idx >= len(sess.avail_trains):
+            return jsonify({"ok": False, "error": "無效的車次選擇"}), 400
+            
+        train = sess.avail_trains[idx]
+    except Exception as e:
+        return jsonify({"ok": False, "error": f"車次選擇錯誤: {str(e)}"}), 400
+
+    # 執行訂票邏輯... (其餘保持不變)
+    confirm_train = ConfirmTrain()
+    confirm_train.selection = train.form_value
+    try:
+        result = sess.client.submit_train(confirm_train.get_params())
+        errors = _errors_or_none(result.content)
+        if errors:
+            return jsonify({"ok": False, "errors": errors}), 400 # 修正為 400 並回傳錯誤
+        
+        sess.confirm_train = confirm_train
+        sess.confirm_ticket = ConfirmTicket()
+        sess.state = "awaiting_personal_info"
+        return jsonify({"ok": True, "next": "personal_info"})
+    except Exception as e:
+        logger.error(f"訂票選擇車次發生嚴重錯誤: {e}", exc_info=True)
+        return jsonify({"ok": False, "error": "伺服器內部錯誤，請檢查終端機日誌"}), 500
+
+@thsr_bp.route("/confirm", methods=["POST"])
+@require_auth
+def confirm():
+    data = request.get_json(silent=True) or {}
+    session_id = data.get("session_id", "")
+    sess = thsr_session_manager.get(session_id, _uid())
+    if sess is None or sess.confirm_ticket is None: return jsonify({"ok": False, "error": "Session 已過期"}), 404
+
+    try:
+        sess.confirm_ticket.personal_id = (data.get("personal_id") or "").strip()
+        sess.confirm_ticket.phone = (data.get("phone") or "").strip()
+        result = sess.client.submit_ticket(sess.confirm_ticket.get_params())
+        errors = _errors_or_none(result.content)
+        if errors: return jsonify({"ok": False, "errors": errors})
+        
+        ticket = BookingResult().parse(result.content)[0]
+        thsr_session_manager.delete(session_id)
+        return jsonify({"ok": True, "ticket": {"booking_id": ticket.id, "payment_deadline": ticket.payment_deadline, "seat_class": ticket.seat_class, "ticket_num_info": ticket.ticket_num_info, "start_station": ticket.start_station, "dest_station": ticket.dest_station, "train_id": ticket.train_id, "depart_time": ticket.depart_time, "arrival_time": ticket.arrival_time, "date": ticket.date, "seat": ticket.seat, "price": ticket.price}, "message": "全自動搶票成功！請盡速完成付款取票！"})
+    except Exception as e:
+        return jsonify({"ok": False, "error": f"訂票失敗: {e}"}), 502

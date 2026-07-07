@@ -132,6 +132,12 @@ def main() -> None:
     intraday_monitor.start()
     print(f"   即時監控:  ✅ 已啟動（盤中 09:00-13:30，每 {intraday_monitor.get_interval()} 秒自動抓取，可於頁面即時調整）")
 
+    # ── 基本面／籌碼資料（TWSE OpenAPI：本益比/殖利率/月營收/融資融券） ──
+    import threading as _threading
+    fundamentals_svc = _svc.fundamentals
+    _threading.Thread(target=fundamentals_svc.refresh_all, daemon=True, name="FundamentalsRefresh").start()
+    print(f"   基本面資料: ✅ 背景更新中（本益比/殖利率/月營收/融資融券，每日快取一次）")
+
     # ── 背景任務 ───────────────────────────────────────────────
 
     # 自動開啟瀏覽器（僅本機，Docker/Render 環境跳過）

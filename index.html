@@ -63,6 +63,10 @@
     即時監控
     <span style="position: absolute; top: 4px; right: 2px; background: #d63939; color: white; font-size: 9px; padding: 1px 3.5px; border-radius: 4px; font-weight: bold; transform: scale(0.75); line-height: 1;">NEW</span>
   </div>
+  <div class="tab" data-tab="thsr" style="position: relative; padding-right: 22px !important;">
+    高鐵訂票
+    <span style="position: absolute; top: 4px; right: 2px; background: #d63939; color: white; font-size: 9px; padding: 1px 3.5px; border-radius: 4px; font-weight: bold; transform: scale(0.75); line-height: 1;">NEW</span>
+  </div>
   <div class="tab" data-tab="backtest">回測</div>
   <div class="tab" data-tab="news">財經情報</div>
   <div class="tab" data-tab="ai">AI 情報</div>
@@ -130,10 +134,17 @@
   <!-- 台股掃描 -->
   <div class="panel" id="tab-scanner" style="display:none;">
     <div class="sec-hdr">
-      <div class="strat-row">
+      <div class="strat-row" style="flex-wrap:wrap;">
         <button class="sbtn active" id="strend" onclick="setStrat('trend')">🛡️ 趨勢策略</button>
         <button class="sbtn" id="sict" onclick="setStrat('ict')">🏹 ICT 策略</button>
         <button class="sbtn" id="sfundamental" onclick="setStrat('fundamental')">📊 基本面</button>
+        <button class="sbtn" id="srsi" onclick="setStrat('rsi')">📉 RSI</button>
+        <button class="sbtn" id="smacd" onclick="setStrat('macd')">〰️ MACD</button>
+        <button class="sbtn" id="sbollinger" onclick="setStrat('bollinger')">🎢 布林通道</button>
+        <button class="sbtn" id="sbreakout" onclick="setStrat('breakout')">🚀 突破策略</button>
+        <button class="sbtn" id="svixpanic" onclick="setStrat('vix_panic')">😱 VIX恐慌篩選</button>
+        <button class="sbtn" id="schipwashout" onclick="setStrat('chip_washout')">🧼 籌碼洗淨</button>
+        <button class="sbtn" id="sensemble" onclick="setStrat('ensemble')">🗳️ 組合投票</button>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
         <button class="btn btn-sm btn-primary" id="scan-btn" onclick="runScan()">▶ 自訂清單</button>
@@ -177,6 +188,13 @@
           <option value="trend">趨勢策略</option>
           <option value="ict">ICT 策略</option>
           <option value="fundamental">基本面策略</option>
+          <option value="rsi">RSI 策略</option>
+          <option value="macd">MACD 策略</option>
+          <option value="bollinger">布林通道策略</option>
+          <option value="breakout">突破策略</option>
+          <option value="vix_panic">VIX恐慌篩選</option>
+          <option value="chip_washout">籌碼洗淨策略</option>
+          <option value="ensemble">組合投票策略</option>
         </select>
       </div>
       <div class="col-6 col-sm-3 col-lg-2">
@@ -425,6 +443,7 @@
         <input type="number" id="id-interval-input" min="3" value="5" style="width:64px;padding:4px 6px;font-family:var(--mono);font-size:12px;border-radius:4px;border:1px solid var(--border,#30363d);background:var(--bs-body-bg);color:inherit;">
         <span style="font-size:11px;color:var(--text-tertiary,#8b949e);">秒</span>
         <button class="btn btn-sm btn-primary" onclick="idApplyInterval()">套用</button>
+        <button class="btn btn-sm" onclick="idForceFetch()" title="不受盤中時間限制，立即抓取一次，方便測試 TWSE→FinMind→YFinance">🔬 立即測試抓取</button>
       </div>
       <div style="font-size:11px;color:var(--text-tertiary,#8b949e);font-family:var(--mono);">
         盤中時間 09:00–13:30 自動抓取；法人／外資為官方每日盤後公告，非逐筆即時
@@ -490,6 +509,127 @@
     </div>
 
   </div><!-- /tab-intraday -->
+
+  <!-- 高鐵訂票（手動輸入驗證碼版） -->
+  <div class="panel" id="tab-thsr" style="display:none;">
+
+    <div class="sec-hdr">
+      <div class="sec-title-mono">高鐵訂票</div>
+      <div style="font-size:11px;color:var(--text-tertiary,#8b949e);font-family:var(--mono);">
+        驗證碼由本頁去噪清晰化後顯示，仍須由您本人手動輸入 — 不做任何自動辨識
+      </div>
+    </div>
+
+    <!-- Step 1：起訖站/日期/時間/票數 -->
+    <div id="thsr-step-1">
+      <div class="form-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:12px;">
+        <div>
+          <label style="font-size:11px;color:var(--text-tertiary,#8b949e);">出發站</label>
+          <select id="thsr-start" class="form-control"></select>
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text-tertiary,#8b949e);">到達站</label>
+          <select id="thsr-dest" class="form-control"></select>
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text-tertiary,#8b949e);">出發日期</label>
+          <input type="date" id="thsr-date" class="form-control">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text-tertiary,#8b949e);">時間</label>
+          <select id="thsr-time" class="form-control"></select>
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text-tertiary,#8b949e);">成人票數</label>
+          <input type="number" id="thsr-adult" class="form-control" min="0" max="10" value="1">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text-tertiary,#8b949e);">孩童票數（6-11歲）</label>
+          <input type="number" id="thsr-child" class="form-control" min="0" max="10" value="0">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text-tertiary,#8b949e);">愛心票數</label>
+          <input type="number" id="thsr-disabled" class="form-control" min="0" max="10" value="0">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text-tertiary,#8b949e);">敬老票數</label>
+          <input type="number" id="thsr-elder" class="form-control" min="0" max="10" value="0">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text-tertiary,#8b949e);">大學生票數</label>
+          <input type="number" id="thsr-college" class="form-control" min="0" max="10" value="0">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text-tertiary,#8b949e);">車廂</label>
+          <select id="thsr-class" class="form-control"></select>
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text-tertiary,#8b949e);">座位偏好</label>
+          <select id="thsr-seat" class="form-control"></select>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="thsrStart()">下一步：取得驗證碼</button>
+      <div id="thsr-step1-msg" style="margin-top:8px;font-size:12px;color:#ef4444;"></div>
+    </div>
+
+    <!-- Step 2：驗證碼 -->
+    <div id="thsr-step-2" style="display:none;">
+      <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:11px;color:var(--text-tertiary,#8b949e);margin-bottom:6px;">驗證碼（已去噪清晰化，僅供您本人閱讀）</div>
+          <img id="thsr-captcha-img" style="border:1px solid var(--border,#30363d);background:#fff;" />
+          <div style="margin-top:6px;">
+            <button class="btn btn-sm" onclick="thsrRefreshCaptcha()">🔄 看不清楚，換一張</button>
+          </div>
+        </div>
+        <div style="flex:1;min-width:200px;">
+          <label style="font-size:11px;color:var(--text-tertiary,#8b949e);">請輸入驗證碼</label>
+          <input type="text" id="thsr-captcha-input" class="form-control" placeholder="輸入圖片中的文字"
+                 onkeydown="if(event.key==='Enter') thsrSubmitCaptcha()">
+          <button class="btn btn-primary" style="margin-top:10px;" onclick="thsrSubmitCaptcha()">送出，查詢可選車次</button>
+        </div>
+      </div>
+      <div id="thsr-step2-msg" style="margin-top:8px;font-size:12px;color:#ef4444;"></div>
+    </div>
+
+    <!-- Step 3：選擇車次 -->
+    <div id="thsr-step-3" style="display:none;">
+      <div style="overflow-x:auto;">
+        <table class="table" style="font-size:12px;">
+          <thead><tr><th></th><th>車次</th><th>出發</th><th>到達</th><th>行車時間</th><th>優惠</th></tr></thead>
+          <tbody id="thsr-trains-body"></tbody>
+        </table>
+      </div>
+      <button class="btn btn-primary" onclick="thsrSelectTrain()">下一步：填寫訂票人資料</button>
+      <div id="thsr-step3-msg" style="margin-top:8px;font-size:12px;color:#ef4444;"></div>
+    </div>
+
+    <!-- Step 4：身分證/手機 -->
+    <div id="thsr-step-4" style="display:none;">
+      <div class="form-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:12px;max-width:500px;">
+        <div>
+          <label style="font-size:11px;color:var(--text-tertiary,#8b949e);">身分證字號（訂購人）</label>
+          <input type="text" id="thsr-personal-id" class="form-control" maxlength="10" placeholder="A123456789">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text-tertiary,#8b949e);">手機（選填，09開頭10碼）</label>
+          <input type="text" id="thsr-phone" class="form-control" maxlength="10" placeholder="0912345678">
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="thsrConfirm()">送出訂票</button>
+      <div id="thsr-step4-msg" style="margin-top:8px;font-size:12px;color:#ef4444;"></div>
+    </div>
+
+    <!-- Step 5：結果 -->
+    <div id="thsr-step-5" style="display:none;">
+      <div class="empty" style="border:1px solid #10b981;">
+        <div class="empty-icon">🎫</div>
+        <div id="thsr-result-detail" style="font-family:var(--mono);font-size:13px;line-height:1.9;text-align:left;display:inline-block;"></div>
+      </div>
+      <button class="btn btn-sm" style="margin-top:12px;" onclick="thsrRestart()">➕ 訂下一張票</button>
+    </div>
+
+  </div><!-- /tab-thsr -->
 
 </main>
 
@@ -644,6 +784,7 @@
 <script src="/static/js/settings.js"></script>
 <script src="/static/js/predict.js?v=999"></script>
 <script src="/static/js/intraday.js"></script>
+<script src="/static/js/thsr.js"></script>
 
 <script>
 /**
@@ -757,6 +898,11 @@ window.addEventListener("load", function() {
                 }
             } else if (typeof window.stopIntradayPolling === 'function') {
                 window.stopIntradayPolling();
+            }
+
+            // 高鐵訂票分頁：進入時載入站名/時刻表等靜態資料
+            if (targetTab === "thsr" && typeof window.initThsrTab === 'function') {
+                window.initThsrTab();
             }
         });
     });

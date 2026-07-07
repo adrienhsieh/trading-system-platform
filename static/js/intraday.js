@@ -96,6 +96,27 @@ async function idApplyInterval() {
     }
 }
 
+async function idForceFetch() {
+    try {
+        const r = await api('POST', '/api/intraday/force-fetch');
+        if (!r.ok) {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({ icon: 'error', title: r.error || '測試抓取失敗', timer: 2500, showConfirmButton: false });
+            }
+            return;
+        }
+        if (typeof Swal !== 'undefined') {
+            const msg = r.fetched.length
+                ? `已透過 ${r.channel} 抓到：${r.fetched.join('、')}${r.missing.length ? '（未抓到：' + r.missing.join('、') + '）' : ''}`
+                : '沒有任何股票抓取成功，請檢查網路或監控清單';
+            Swal.fire({ icon: r.fetched.length ? 'success' : 'warning', title: '測試抓取完成', text: msg, timer: 4000, showConfirmButton: true });
+        }
+        await idRefreshAll();
+    } catch (e) {
+        console.error('測試抓取失敗', e);
+    }
+}
+
 // ── 監控清單 CRUD ───────────────────────────────────────────────
 
 async function idLoadWatchlist() {

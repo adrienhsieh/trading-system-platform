@@ -1,0 +1,75 @@
+{
+  "total_capital": 3000000,
+  "consecutive_losses": 0,
+  "risk_mode": "normal",
+  "scan_candidates": [],
+  "api_key": "6192e1d5b0edda1691ace2f28b174e815a7ba7184f666ff1e803f5738f8dcc76",
+  "strategy_params": {
+    "trend": {
+      "ema_arrangement": {
+        "enabled": true
+      },
+      "slopes_up": {
+        "enabled": true
+      },
+      "adx_above_25": {
+        "enabled": true,
+        "threshold": 25
+      },
+      "macd_positive": {
+        "enabled": true
+      },
+      "volume_spike": {
+        "enabled": true,
+        "threshold": 1.5
+      },
+      "ema_crossover": {
+        "enabled": true
+      }
+    },
+    "ict": {
+      "bullish_ob": {
+        "enabled": true
+      },
+      "fvg_present": {
+        "enabled": true
+      },
+      "bos": {
+        "enabled": true
+      },
+      "liquidity_sweep": {
+        "enabled": true
+      },
+      "discount_zone": {
+        "enabled": true
+      },
+      "ote_zone": {
+        "enabled": true,
+        "fib_low": 0.618,
+        "fib_high": 0.786
+      },
+      "mss": {
+        "enabled": true
+      }
+    },
+    "fundamental": {
+      "pe_reasonable": {
+        "enabled": true,
+        "threshold": 30
+      },
+      "eps_positive": {
+        "enabled": true
+      },
+      "eps_growth": {
+        "enabled": true
+      },
+      "pb_reasonable": {
+        "enabled": true,
+        "threshold": 2.5
+      },
+      "revenue_growth": {
+        "enabled": true
+      }
+    }
+  }
+}

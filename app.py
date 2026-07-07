@@ -5,6 +5,7 @@ app.py — Flask 應用程式進入點
 """
 import logging
 import os
+import threading  # 🟢 確保導入多執行緒套件
 from pathlib import Path
 
 from flask import Flask, send_from_directory, jsonify
@@ -56,13 +57,57 @@ register_blueprints(app)
 init_admin_web_ui(app)   # ← 只呼叫一次
 
 
+# ── 🟢 ✨ 台股即時自動監控背景安全非同步啟動核心（精準驅動版） ─────────────────────
+_monitor_lock = threading.Lock()
+_monitor_started = False
+
+def _start_intraday_monitor_daemon():
+    """在完全隔離的獨立背景執行緒中安全初始化並執行台股監控迴圈"""
+    try:
+        _logger.info("🚀 [Monitor Thread] 正在獨立背景執行緒中載入台股常駐監控程序...")
+        
+        # 真正讀取屬性，觸發 container 的延遲載入 (Lazy-init)
+        monitor = _container.intraday_monitor
+        
+        # ⚠️ 這裡做出核心精準修正：
+        # 繞過可能與高鐵訂票或其他模組混淆的 'start' 或 'run' 屬性判斷，直接鎖定台股的核心無窮迴圈 `run_loop`。
+        if hasattr(monitor, 'run_loop'):
+            _logger.info("🤖 [Monitor Thread] 偵測到台股核心 run_loop 方法，背景輪詢已正式啟動！")
+            monitor.run_loop()
+        else:
+            # 安全防禦 Fallback：若您的 intraday_monitor.py 將主入口命名為 run
+            _logger.info("🤖 [Monitor Thread] 執行標準台股監控入口...")
+            if hasattr(monitor, '_fetch_all_candidates_loop'):
+                monitor._fetch_all_candidates_loop()
+            elif hasattr(monitor, 'run'):
+                monitor.run()
+            
+        _logger.info("✅ [Monitor Thread] 台股即時自動監控程序已成功進入監聽迴圈。")
+    except Exception as ex:
+        _logger.error("❌ [Monitor Thread] 背景自動監控常駐程式發生嚴重崩潰: %s", ex, exc_info=True)
+
+
+@app.before_request
+def _init_background_tasks_on_first_request():
+    """利用首次前端請求安全觸發背景執行緒，確保 Flask 已完全就緒且絕不卡死主執行緒"""
+    global _monitor_started
+    if not _monitor_started:
+        with _monitor_lock:
+            if not _monitor_started:
+                # 扔進完全獨立且常駐的背景 Daemon 執行緒中跑
+                t = threading.Thread(target=_start_intraday_monitor_daemon, daemon=True)
+                t.start()
+                _monitor_started = True
+                _logger.info("⚙️ [System] 已成功指派獨立背景 Daemon 執行緒接管盤中自動化監控。")
+
+
 # ── 靜態頁面 ──────────────────────────────────────────────────────────
 @app.route("/")
 def index():
     return send_from_directory(str(BASE_DIR), "index.html")
 
 
-# ✨ 新增：明確指定 login 路由，確保前端載入安全
+# 明確指定 login 路由，確保前端載入安全
 @app.route("/login")
 def login_page():
     return send_from_directory(str(BASE_DIR), "login.html")
@@ -88,7 +133,7 @@ def handle_trading_error(e: TradingSystemError):
     return jsonify({"ok": False, "error": f"系統發生錯誤: {str(e)}"}), 500
 
 
-# ✨ 優化：修改 500 攔截器，直接在回傳中暴露錯誤原因（Debug 除錯神器）
+# 優化：修改 500 攔截器，直接在回傳中暴露錯誤原因
 @app.errorhandler(500)
 def handle_500(e):
     _logger.error("Unhandled 500: %s", e, exc_info=True)
